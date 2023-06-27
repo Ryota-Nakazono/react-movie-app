@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import "./SearchForm.css";
 
-export default function SearchForm({ inputValue, handleSearch, setInputValue }) {
+export default function SearchForm({ handleSearch }) {
+  const [inputValue, setInputValue] = useState("");
+
   return (
     <div className="movie-search-form__container">
-      <form className="movie-search-form" onSubmit={handleSearch}>
+      <form className="movie-search-form" onSubmit={(e) => handleSearch(e, inputValue)}>
         <input
           type="text"
           className="movie-search-form__input"
