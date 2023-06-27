@@ -1,0 +1,20 @@
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 32px;
+  margin-bottom: 20px;
+  gap: 10px;
+}
+
+.pagination button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 64px;
+  height: 40px;
+  margin: 0 5px;
+  background-color: #fff;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+}
