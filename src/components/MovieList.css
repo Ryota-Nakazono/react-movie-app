@@ -38,10 +38,6 @@
   }
 }
 
-.movie-lists__item:last-child {
-  margin-bottom: 0;
-}
-
 .movie-lists__item img {
   width: 100%;
   height: auto;
