@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useContext } from "react";
+import { LanguageContext } from "../contexts/LanguageContext";
 import "./MovieList.css";
 
 export default function MovieList({ movies, openModal }) {
+  const { language } = useContext(LanguageContext);
   return (
     <ul className="movie-lists">
       {movies.map((movie) => (
@@ -15,8 +17,12 @@ export default function MovieList({ movies, openModal }) {
             <div className="movie-overview">
               <p>{movie.overview}</p>
             </div>
-            <div>公開日：{movie.release_date}</div>
-            <div className="movie-info__rating">評価：{movie.vote_average}</div>
+            <div>
+              {language === "ja-JP" ? "公開日" : "Release Date"}：{movie.release_date}
+            </div>
+            <div className="movie-info__rating">
+              {language === "ja-JP" ? "評価" : "Rating"}：{movie.vote_average}
+            </div>
           </div>
         </li>
       ))}

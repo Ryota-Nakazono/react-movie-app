@@ -1,12 +1,15 @@
 import "./App.css";
-import MovieListsContainer from "./components/MovieListContainer";
+import MovieLists from "./components/MovieListContainer";
+import { LanguageProvider } from "./contexts/LanguageContext";
 import React from "react";
 
 function App() {
   return (
     <div className="App">
-      <h1>React Movie App</h1>
-      <MovieListsContainer />
+      <LanguageProvider>
+        <h1>React Movie App</h1>
+        <MovieLists />
+      </LanguageProvider>
     </div>
   );
 }

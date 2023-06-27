@@ -1,29 +1,31 @@
-// 必要なモジュールとコンポーネントをインポートします
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useContext } from "react";
 import MovieList from "./MovieList";
 import SearchForm from "./SearchForm";
 import Pagination from "./Pagination";
 import Modal from "./Modal";
+import LanguageSwitcher from "./LanguageSwitcher";
+import { LanguageContext } from "../contexts/LanguageContext";
 import "./MovieListContainer.css";
 
-// 映画情報を取得するためのベースURLを設定
 const BASE_URL = "https://api.themoviedb.org/3";
 
 const MovieLists = () => {
-  const [movies, setMovies] = useState([]);
+  const [popularMovies, setPopularMovies] = useState([]);
+  const [searchedMovies, setSearchedMovies] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [error, setError] = useState(null);
-  const [showPopularMoviesTitle, setShowPopularMoviesTitle] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchedCurrentPage, setSearchedCurrentPage] = useState(1);
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [selectedMovieDetail, setSelectedMovieDetail] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [detailLoading, setDetailLoading] = useState(false);
+  const { language } = useContext(LanguageContext);
 
-  // 映画データを取得する関数を定義します
-  const fetchMovies = useCallback(async (url) => {
+  // 映画データを取得する関数を定義
+  const fetchMovies = useCallback(async (url, setMovies) => {
     setLoading(true);
     try {
       const response = await fetch(url, {
@@ -32,8 +34,12 @@ const MovieLists = () => {
           "Content-Type": "application/json",
         },
       });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
       const data = await response.json();
       setMovies(data.results);
+      console.log(data.results);
     } catch (error) {
       setError(error);
     } finally {
@@ -41,78 +47,86 @@ const MovieLists = () => {
     }
   }, []);
 
-  // 人気映画データを取得する関数を定義します
+  // 人気映画データを取得する関数を定義
   const fetchPopularMovies = useCallback(
     async (page) => {
-      setShowPopularMoviesTitle(true);
-      setSearchTerm("");
-      // 人気映画のAPIエンドポイントを作成し、fetchMovies関数を呼び出します
-      const url = `${BASE_URL}/movie/popular?api_key=${process.env.REACT_APP_TMDB_API_KEY}&include_adult=false&language=ja-JP&page=${page}`;
-      fetchMovies(url);
+      const url = `${BASE_URL}/movie/popular?api_key=${process.env.REACT_APP_TMDB_API_KEY}&include_adult=false&language=${language}&page=${page}`;
+      fetchMovies(url, setPopularMovies);
+      setIsSearching(false);
     },
-    [fetchMovies]
+    [fetchMovies, language]
   );
 
-  // 検索結果の映画データを取得する関数を定義します
+  // 検索結果の映画データを取得する関数を定義
   const fetchSearchedMovies = useCallback(
     async (query, page) => {
-      // 検索のAPIエンドポイントを作成し、fetchMovies関数を呼び出します
-      const url = `${BASE_URL}/search/movie?api_key=${process.env.REACT_APP_TMDB_API_KEY}&include_adult=false&language=ja-JP&query=${query}&page=${page}`;
-      fetchMovies(url);
+      const url = `${BASE_URL}/search/movie?api_key=${process.env.REACT_APP_TMDB_API_KEY}&include_adult=false&language=${language}&query=${query}&page=${page}`;
+      fetchMovies(url, setSearchedMovies);
+      setIsSearching(true);
     },
-    [fetchMovies]
+    [fetchMovies, language]
   );
 
-  // 映画の詳細情報を取得する関数を定義します
-  const fetchMovieDetail = useCallback(async (id) => {
-    setDetailLoading(true);
-    try {
-      // 映画の詳細情報のAPIエンドポイントからデータを取得します
-      const response = await fetch(
-        `${BASE_URL}/movie/${id}?api_key=${process.env.REACT_APP_TMDB_API_KEY}&language=ja-JP`
-      );
-      const data = await response.json();
-      setSelectedMovieDetail(data);
-    } catch (error) {
-      setError(error);
-    } finally {
-      setDetailLoading(false);
-    }
-  }, []);
+  // 映画の詳細情報を取得する関数を定義
+  const fetchMovieDetail = useCallback(
+    async (id) => {
+      setDetailLoading(true);
+      let url;
+      if (language === "ja-JP") {
+        url = `${BASE_URL}/movie/${id}?api_key=${process.env.REACT_APP_TMDB_API_KEY}&language=ja-JP`;
+      } else {
+        url = `${BASE_URL}/movie/${id}?api_key=${process.env.REACT_APP_TMDB_API_KEY}&language=en-US`;
+      }
+      try {
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        setSelectedMovieDetail(data);
+      } catch (error) {
+        setError(error);
+      } finally {
+        setDetailLoading(false);
+      }
+    },
+    [language]
+  );
 
-  // コンポーネントがマウントされたとき、またはcurrentPageが変更されたときに人気の映画を取得します
+  // 人気映画を取得
   useEffect(() => {
-    fetchPopularMovies(currentPage);
-  }, [currentPage, fetchPopularMovies]);
+    if (!isSearching) {
+      fetchPopularMovies(currentPage);
+    }
+  }, [currentPage, fetchPopularMovies, language, isSearching]);
 
-  // searchTermまたはsearchedCurrentPageが変更されたときに検索された映画を取得します
+  // 検索された映画を取得
   useEffect(() => {
     if (searchTerm) {
       fetchSearchedMovies(searchTerm, searchedCurrentPage);
     }
-  }, [searchTerm, searchedCurrentPage, fetchSearchedMovies]);
+  }, [searchTerm, searchedCurrentPage, fetchSearchedMovies, language]);
 
-  // selectedMovieが変更されたときに映画の詳細を取得します
+  // 映画の詳細を取得
   useEffect(() => {
     if (selectedMovie) {
       fetchMovieDetail(selectedMovie.id);
     }
   }, [selectedMovie, fetchMovieDetail]);
 
-  // 映画検索のハンドラー関数を定義します
+  // 映画検索のハンドラー関数を定義
   const handleMovieSearch = (event, inputValue) => {
     event.preventDefault();
     setSearchTerm(inputValue);
-    // 検索結果のページを1にリセットします
     setSearchedCurrentPage(1);
   };
 
-  // ページネーションのハンドラー関数を定義します
+  // ページネーションのハンドラー関数を定義
   const handlePagination = (newPage) => {
     setSearchedCurrentPage(newPage);
   };
 
-  // モーダルの開閉を切り替える関数を定義します
+  // モーダルの表示・非表示を切り替える関数を定義
   const toggleModal = (movie = null) => {
     setSelectedMovie(movie);
     setIsModalOpen((prevState) => !prevState);
@@ -120,18 +134,20 @@ const MovieLists = () => {
 
   return (
     <>
+      <LanguageSwitcher />
       <SearchForm handleSearch={handleMovieSearch} />
-      {showPopularMoviesTitle && movies.length > 0 && (
-        <h2 className="movie-lists__header">人気映画一覧</h2>
-      )}
+      {!isSearching && <h2 className="movie-lists__header">人気映画一覧</h2>}
       <div className="movie-lists__container">
         {loading ? (
           <div>Loading...</div>
         ) : error ? (
           <div>エラー: {error}</div>
-        ) : movies.length > 0 ? (
+        ) : searchedMovies.length > 0 || popularMovies.length > 0 ? (
           <>
-            <MovieList movies={movies} openModal={toggleModal} />
+            <MovieList
+              movies={isSearching ? searchedMovies : popularMovies}
+              openModal={toggleModal}
+            />
             <Pagination
               currentPage={currentPage}
               handlePagination={searchTerm ? handlePagination : setCurrentPage}
