@@ -1,16 +1,11 @@
 import React from "react";
-import { ModalContext } from "../contexts/ModalContext";
 import "./MovieList.css";
 
-export default function MovieList({ movies }) {
-  const { toggleModal } = React.useContext(ModalContext);
+export default function MovieList({ movies, openModal }) {
   return (
     <ul className="movie-lists">
       {movies.map((movie) => (
-        <li
-          className="movie-lists__item"
-          key={movie.id}
-          onClick={() => toggleModal(movie)}>
+        <li className="movie-lists__item" key={movie.id} onClick={() => openModal(movie)}>
           <img
             src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
             alt={`${movie.title} poster`}

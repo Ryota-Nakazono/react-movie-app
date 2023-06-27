@@ -1,56 +1,52 @@
-import React, { useContext } from "react";
-import { ModalContext } from "../contexts/ModalContext";
+import React from "react";
 import "./Modal.css";
 
-export default function Modal() {
-  const { selectedMovieDetail, detailLoading, toggleModal } = useContext(ModalContext);
+export default function Modal({ movieDetail, isLoading, closeModal }) {
   return (
     <div className="modal">
       <div className="modal__content">
         <div className="modal__header">
           <h2 className="modal__title">映画の詳細</h2>
-          <button className="modal__close" onClick={() => toggleModal()}>
+          <button className="modal__close" onClick={() => closeModal()}>
             ×
           </button>
         </div>
         <div className="modal__body">
-          {detailLoading ? (
+          {isLoading ? (
             <div>Loading...</div>
-          ) : selectedMovieDetail ? (
+          ) : movieDetail ? (
             <>
               <div className="modal__image">
-                {selectedMovieDetail.poster_path && (
+                {movieDetail.poster_path && (
                   <img
-                    src={`https://image.tmdb.org/t/p/w500/${selectedMovieDetail.poster_path}`}
-                    alt={`${selectedMovieDetail.title} poster`}
+                    src={`https://image.tmdb.org/t/p/w500/${movieDetail.poster_path}`}
+                    alt={`${movieDetail.title} poster`}
                   />
                 )}
               </div>
               <div className="modal__info">
-                {selectedMovieDetail.runtime && (
+                {movieDetail.runtime && (
                   <div className="modal__runtime">
                     <strong>上映時間：</strong>
-                    {selectedMovieDetail.runtime}分
+                    {movieDetail.runtime}分
                   </div>
                 )}
-                {selectedMovieDetail.overview && (
+                {movieDetail.overview && (
                   <div className="modal__overview">
                     <strong>概要：</strong>
-                    {selectedMovieDetail.overview}
+                    {movieDetail.overview}
                   </div>
                 )}
-                {selectedMovieDetail.homepage && (
+                {movieDetail.homepage && (
                   <div className="modal__homepage">
                     <strong>ホームページ：</strong>
-                    <a href={selectedMovieDetail.homepage}>
-                      {selectedMovieDetail.homepage}
-                    </a>
+                    <a href={movieDetail.homepage}>{movieDetail.homepage}</a>
                   </div>
                 )}
-                {selectedMovieDetail.genres && (
+                {movieDetail.genres && (
                   <div className="modal__genres">
                     <strong>ジャンル：</strong>
-                    {selectedMovieDetail.genres.map((genre) => genre.name).join(", ")}
+                    {movieDetail.genres.map((genre) => genre.name).join(", ")}
                   </div>
                 )}
               </div>

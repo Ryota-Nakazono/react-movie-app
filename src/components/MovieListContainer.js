@@ -4,7 +4,6 @@ import MovieList from "./MovieList";
 import SearchForm from "./SearchForm";
 import Pagination from "./Pagination";
 import Modal from "./Modal";
-import { ModalContext } from "../contexts/ModalContext";
 import "./MovieListContainer.css";
 
 // 映画情報を取得するためのベースURLを設定
@@ -13,7 +12,6 @@ const BASE_URL = "https://api.themoviedb.org/3";
 const MovieLists = () => {
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [inputValue, setInputValue] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [error, setError] = useState(null);
   const [showPopularMoviesTitle, setShowPopularMoviesTitle] = useState(true);
@@ -102,7 +100,7 @@ const MovieLists = () => {
   }, [selectedMovie, fetchMovieDetail]);
 
   // 映画検索のハンドラー関数を定義します
-  const handleMovieSearch = (event) => {
+  const handleMovieSearch = (event, inputValue) => {
     event.preventDefault();
     setSearchTerm(inputValue);
     // 検索結果のページを1にリセットします
@@ -121,24 +119,8 @@ const MovieLists = () => {
   };
 
   return (
-    <ModalContext.Provider
-      value={{
-        selectedMovie,
-        setSelectedMovie,
-        selectedMovieDetail,
-        setSelectedMovieDetail,
-        isModalOpen,
-        setIsModalOpen,
-        fetchMovieDetail,
-        toggleModal,
-        detailLoading,
-        setDetailLoading,
-      }}>
-      <SearchForm
-        inputValue={inputValue}
-        handleSearch={handleMovieSearch}
-        setInputValue={setInputValue}
-      />
+    <>
+      <SearchForm handleSearch={handleMovieSearch} />
       {showPopularMoviesTitle && movies.length > 0 && (
         <h2 className="movie-lists__header">人気映画一覧</h2>
       )}
@@ -149,7 +131,7 @@ const MovieLists = () => {
           <div>エラー: {error}</div>
         ) : movies.length > 0 ? (
           <>
-            <MovieList movies={movies} />
+            <MovieList movies={movies} openModal={toggleModal} />
             <Pagination
               currentPage={currentPage}
               handlePagination={searchTerm ? handlePagination : setCurrentPage}
@@ -161,8 +143,14 @@ const MovieLists = () => {
           <div>該当する映画が見つかりませんでした。</div>
         )}
       </div>
-      {isModalOpen && <Modal />}
-    </ModalContext.Provider>
+      {isModalOpen && (
+        <Modal
+          movieDetail={selectedMovieDetail}
+          isLoading={detailLoading}
+          closeModal={toggleModal}
+        />
+      )}
+    </>
   );
 };
 
