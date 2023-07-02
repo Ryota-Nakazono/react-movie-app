@@ -53,7 +53,7 @@ export function SearchMovies() {
   return (
     <div className="search__container">
       <Header />
-      <h1>SEARCH</h1>
+      <h1>{language === "ja-JP" ? "映画検索" : "SEARCH"}</h1>
       <SearchForm handleSearch={handleMovieSearch} />
       {searchTerm && (
         <MovieListContainer fetchUrl={fetchSearchedMovies} onMovieClick={openModal} />
