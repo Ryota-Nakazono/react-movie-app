@@ -21,8 +21,7 @@ export function TrendMovies() {
   return (
     <div className="home__container">
       <Header />
-      <h1>TREND</h1>
-      <h2>{language === "ja-JP" ? "人気映画一覧" : "Trending Movies"}</h2>
+      <h1>{language === "ja-JP" ? "人気映画" : "TREND"}</h1>
       <p>
         {language === "ja-JP"
           ? "映画をクリックすると詳細が表示されます。"
