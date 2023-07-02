@@ -93,7 +93,7 @@ export function MovieDetail() {
         </div>
       )}
       <Link to="/" className="link-to__home">
-        {language === "ja-JP" ? "ホームへ戻る" : "Back to Home"}
+        {language === "ja-JP" ? "戻る" : "Back"}
       </Link>
     </>
   );
