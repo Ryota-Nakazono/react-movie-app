@@ -47,49 +47,53 @@ export function MovieDetail() {
         </div>
       ) : (
         <div className="movie-detail__container">
-          {movie ? (
-            <>
-              <img
-                src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-                alt={movie.title}
-              />
-              <div className="movie-detail__info">
-                <h2 className="movie-detail__title">{movie.title}</h2>
-                {movie.runtime && (
-                  <div className="movie-detail__runtime">
-                    <strong>{language === "ja-JP" ? "上映時間" : "RunTime"}：</strong>
-                    {movie.runtime}分
-                  </div>
-                )}
-                {movie.overview && (
-                  <div className="movie-detail__overview">
-                    <strong>{language === "ja-JP" ? "概要" : "Overview"}：</strong>
-                    {movie.overview}
-                  </div>
-                )}
-                {movie.homepage && (
-                  <div className="movie-detail__homepage">
-                    <strong>
-                      {language === "ja-JP" ? "ホームページ" : "HomePage"}：
-                    </strong>
-                    <a href={movie.homepage}>{movie.homepage}</a>
-                  </div>
-                )}
-                {movie.genres && (
-                  <div className="movie-detail__genres">
-                    <strong>{language === "ja-JP" ? "ジャンル" : "Genres"}：</strong>
-                    {movie.genres.map((genre) => genre.name).join(", ")}
-                  </div>
-                )}
-              </div>
-            </>
-          ) : (
-            <p>
-              {language === "ja-JP"
-                ? "映画の詳細を取得できませんでした。"
-                : "Could not retrieve film details."}
-            </p>
-          )}
+          <div className="movie-detail__inner-container">
+            {movie ? (
+              <>
+                <div className="movie-detail__image">
+                  <img
+                    src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+                    alt={movie.title}
+                  />
+                </div>
+                <div className="movie-detail__info">
+                  <h2 className="movie-detail__title">{movie.title}</h2>
+                  {movie.runtime && (
+                    <div className="movie-detail__runtime">
+                      <strong>{language === "ja-JP" ? "上映時間" : "RunTime"}：</strong>
+                      {movie.runtime}分
+                    </div>
+                  )}
+                  {movie.overview && (
+                    <div className="movie-detail__overview">
+                      <strong>{language === "ja-JP" ? "概要" : "Overview"}：</strong>
+                      {movie.overview}
+                    </div>
+                  )}
+                  {movie.homepage && (
+                    <div className="movie-detail__homepage">
+                      <strong>
+                        {language === "ja-JP" ? "ホームページ" : "HomePage"}：
+                      </strong>
+                      <a href={movie.homepage}>{movie.homepage}</a>
+                    </div>
+                  )}
+                  {movie.genres && (
+                    <div className="movie-detail__genres">
+                      <strong>{language === "ja-JP" ? "ジャンル" : "Genres"}：</strong>
+                      {movie.genres.map((genre) => genre.name).join(", ")}
+                    </div>
+                  )}
+                </div>
+              </>
+            ) : (
+              <p>
+                {language === "ja-JP"
+                  ? "映画の詳細を取得できませんでした。"
+                  : "Could not retrieve film details."}
+              </p>
+            )}
+          </div>
         </div>
       )}
       <Link to="/" className="link-to__home">
