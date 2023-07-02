@@ -4,6 +4,7 @@ import Header from "./Header";
 import MovieListContainer from "./MovieListContainer";
 import SearchForm from "./SearchForm";
 import Modal from "./Modal";
+import "./SearchMovies.css";
 
 const BASE_URL = "https://api.themoviedb.org/3";
 
