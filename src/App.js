@@ -1,15 +1,17 @@
 import "./App.css";
-import MovieLists from "./components/MovieListContainer";
+import { Router } from "./Router";
 import { LanguageProvider } from "./contexts/LanguageContext";
 import React from "react";
+import { BrowserRouter } from "react-router-dom";
 
 function App() {
   return (
     <div className="App">
-      <LanguageProvider>
-        <h1>React Movie App</h1>
-        <MovieLists />
-      </LanguageProvider>
+      <BrowserRouter>
+        <LanguageProvider>
+          <Router />
+        </LanguageProvider>
+      </BrowserRouter>
     </div>
   );
 }

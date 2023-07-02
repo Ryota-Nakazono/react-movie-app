@@ -1,0 +1,5 @@
+/* ページ幅とHomeと合わせるためにスクロールバーを常に表示する */
+html,
+body {
+  overflow-y: scroll;
+}

@@ -1,0 +1,56 @@
+/* 画像とinfoを横並びで表示 */
+.movie-detail__container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+  max-width: 1000px;
+  margin: 80px auto;
+  gap: 20px;
+}
+
+/* 画像を左側に表示 */
+.movie-detail__image {
+  width: 100%;
+  max-width: 400px;
+  margin-right: 20px;
+}
+
+/* infoを右側に表示 */
+.movie-detail__info {
+  display: flex;
+  width: 100%;
+  max-width: 600px;
+  flex-direction: column;
+  align-items: flex-start;
+  align-content: flex-start;
+  text-align: left;
+}
+
+.movie-detail__info>* {
+  margin-bottom: 40px;
+}
+
+/* タイトル */
+.movie-detail__title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+/* ジャンル */
+.movie-detail__genres {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.link-to__home {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #333;
+  text-decoration: none;
+  margin-bottom: 80px;
+}
